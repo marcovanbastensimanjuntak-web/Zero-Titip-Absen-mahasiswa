@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kampanye Zero Titip Absen UNNES</title>
     
+    <!-- 1. TAMBAHKAN LIBRARY FIREBASE DI SINI -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
@@ -95,7 +96,7 @@
                 <div class="form-group"><label>Angkatan</label>
                     <select id="angkatanKomitmen" required>
                         <option value="" disabled selected>Pilih Angkatan</option>
-                        <option value="2026">2026</option><option value="2025">2025</option><option value="2024">2024</option>
+                        <option value="2026">2026</option><option value="2025">2025</option><option value="2024">2024</option><option value="2023">2023</option>
                     </select>
                 </div>
                 <button type="submit" class="btn-submit">Kirim Komitmen</button>
@@ -129,6 +130,7 @@
             <button class="btn-back" onclick="goHome()">⬅ Kembali</button>
         </div>
 
+        <!-- SECTION 5: PRESENSI -->
         <div id="presensiSection" class="content-section">
             <h2>Prototipe Presensi Cerdas</h2>
             <p>Sistem akan memvalidasi wajah dan melacak lokasi GPS kamu, lalu menyimpannya ke database.</p>
@@ -172,7 +174,7 @@
 
     <script>
         // =========================================================================
-        // 2. KONFIGURASI FIREBASE KAMU: GANTI ISI BLOK INI DENGAN KODE DARI LANGKAH 2
+        // 2. KONFIGURASI FIREBASE KAMU: GANTI ISI BLOK INI DENGAN KODE DARI FIREBASE
         // =========================================================================
         const firebaseConfig = {
             apiKey: "AIzaSyBegTo0kAC470To9efbJMZ-c6mngbQu-1o",
@@ -193,7 +195,7 @@
 
         // 3. FUNGSI MENYIMPAN DATA KOMITMEN KE DATABASE
         document.getElementById('formKomitmen').addEventListener('submit', function(e) {
-            e.preventDefault(); // Cegah reload halaman
+            e.preventDefault(); 
             const btn = e.target.querySelector('button');
             btn.innerHTML = "Menyimpan..."; btn.disabled = true;
 
@@ -228,7 +230,6 @@
             }).finally(() => { btn.innerHTML = "Kirim Ide"; btn.disabled = false; });
         });
 
-
         // --- LOGIKA TEMA & ANTARMUKA ---
         const themeToggle = document.getElementById('themeToggle');
         if (localStorage.getItem('theme') === 'dark') { document.body.setAttribute('data-theme', 'dark'); themeToggle.innerText = '☀️'; }
@@ -247,10 +248,10 @@
             document.getElementById('mainMenu').style.display = 'grid';
         }
 
-        // --- LOGIKA KAMERA & GPS (TETAP SAMA SEPERTI SEBELUMNYA) ---
+        // --- DATA KOORDINAT (DIKALIBRASI ULANG) ---
         const KOORDINAT_FAKULTAS = {
-            "FMIPA": { lat: -7.04870, lon: 110.38960, radius: 700 }, 
-            "FBS":   { lat: -7.05050, lon: 110.39050, radius: 700 }, 
+            "FMIPA": { lat: -7.04960, lon: 110.39350, radius: 700 }, // Dikalibrasi ke tengah FMIPA
+            "FBS":   { lat: -7.05010, lon: 110.39120, radius: 700 }, // Dikalibrasi ke tengah FBS
             "FEB":   { lat: -7.05320, lon: 110.39210, radius: 500 },
             "FISIP": { lat: -7.05350, lon: 110.39720, radius: 500 },
             "FIPP":  { lat: -7.05020, lon: 110.39650, radius: 500 },
@@ -320,7 +321,7 @@
                         } else {
                             statusHasil = "Gagal (Di luar area/Salah gedung)";
                             statusBox.style.backgroundColor = "rgba(244, 67, 54, 0.2)";
-                            pesan = `❌ <strong>Ditolak!</strong><br>Kamu terdeteksi di area <strong>${terdekat}</strong>, bukan di ${fakultas}.<br><span style="font-size:0.85em;">(Jarak ke ${fakultas}: ${Math.round(jarak)}m)</span>`;
+                            pesan = `❌ <strong>Ditolak!</strong><br>Kamu terdeteksi lebih dekat ke <strong>${terdekat}</strong>, bukan di ${fakultas}.<br><span style="font-size:0.85em;">(Jarak ke ${fakultas}: ${Math.round(jarak)}m. Maksimal: ${target.radius}m)</span>`;
                         }
 
                         statusBox.innerHTML = pesan;
